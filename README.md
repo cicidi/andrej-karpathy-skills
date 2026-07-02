@@ -20,29 +20,45 @@ From Andrej's post:
 
 ## The Solution
 
-Four principles in one file that directly address these issues:
+Eight principles in one file that directly address these issues:
 
 | Principle | Addresses |
 |-----------|-----------|
-| **Think Before Coding** | Wrong assumptions, hidden confusion, missing tradeoffs |
+| **Ask and Confirm Before Coding** | Wrong assumptions, hidden confusion, missing tradeoffs |
+| **Evidence and Reasoning** | Unfounded decisions, wrong direction, ambiguous tradeoffs |
 | **Simplicity First** | Overcomplication, bloated abstractions |
 | **Surgical Changes** | Orthogonal edits, touching code you shouldn't |
 | **Goal-Driven Execution** | Leverage through tests-first, verifiable success criteria |
+| **Decompose Complex Tasks** | Overwhelm, unclear scope, wrong priorities |
+| **Plan and Track Progress** | Lost context, invisible status, sequential bottlenecks |
+| **Recommend Model Upgrade** | Underpowered model for complex reasoning |
 
-## The Four Principles in Detail
+## The Eight Principles in Detail
 
-### 1. Think Before Coding
+### 1. Ask and Confirm Before Coding
 
 **Don't assume. Don't hide confusion. Surface tradeoffs.**
 
-LLMs often pick an interpretation silently and run with it. This principle forces explicit reasoning:
+LLMs often pick an interpretation silently and run with it. This principle forces explicit reasoning before any code is written:
 
+- **Clarify scope, goal, possibilities, and clues** — Ask follow-up questions until you are ~90% clear on what to do
 - **State assumptions explicitly** — If uncertain, ask rather than guess
 - **Present multiple interpretations** — Don't pick silently when ambiguity exists
 - **Push back when warranted** — If a simpler approach exists, say so
 - **Stop when confused** — Name what's unclear and ask for clarification
 
-### 2. Simplicity First
+### 2. Evidence and Reasoning
+
+**Ground every decision in evidence. Reason explicitly.**
+
+Prevents the LLM from jumping to conclusions without proper investigation:
+
+- **Collect and filter evidence** — Docs, code, references. Do preliminary analysis to determine direction
+- **Course-correct when wrong** — If the direction is wrong, return to step 1 and restart (for trivial tasks, use judgment)
+- **Deepen when clearer** — If the direction becomes more concrete, re-scan or expand the evidence chain
+- **Surface multiple conclusions** — State pros/cons, give a recommendation, and assign confidence coefficients (summing to 100%)
+
+### 3. Simplicity First
 
 **Minimum code that solves the problem. Nothing speculative.**
 
@@ -56,7 +72,7 @@ Combat the tendency toward overengineering:
 
 **The test:** Would a senior engineer say this is overcomplicated? If yes, simplify.
 
-### 3. Surgical Changes
+### 4. Surgical Changes
 
 **Touch only what you must. Clean up only your own mess.**
 
@@ -74,7 +90,7 @@ When your changes create orphans:
 
 **The test:** Every changed line should trace directly to the user's request.
 
-### 4. Goal-Driven Execution
+### 5. Goal-Driven Execution
 
 **Define success criteria. Loop until verified.**
 
@@ -95,6 +111,34 @@ For multi-step tasks, state a brief plan:
 ```
 
 Strong success criteria let the LLM loop independently. Weak criteria ("make it work") require constant clarification.
+
+### 6. Decompose Complex Tasks
+
+**Break complex work down. Start with what matters most.**
+
+Combat overwhelm and unclear scope on large tasks:
+
+- **Split before starting** — If a task is complex, break it into smaller subtasks
+- **Order by priority** — Tackle the most important subtask first
+- **Re-evaluate as you learn** — Adjust priorities based on what you discover during execution
+
+### 7. Plan and Track Progress
+
+**Make the plan visible. Show where you are.**
+
+Prevents lost context and keeps both the LLM and the user aligned:
+
+- **Display a plan for every task** — Use TodoWrite or todo lists to show the full breakdown
+- **Show current progress** — Mark what's in progress and completed so the user can follow along
+- **Dispatch parallel work** — When subtasks are independent, run them in parallel via subagents to maximize throughput
+
+### 8. Recommend Model Upgrade When Warranted
+
+**Flag when a task needs a stronger model.**
+
+Self-awareness about capability boundaries:
+
+- If the task would benefit from a more capable LLM (e.g., complex reasoning, large refactoring), say so and recommend an upgrade
 
 ## Install
 
@@ -135,15 +179,17 @@ From Andrej:
 
 > "LLMs are exceptionally good at looping until they meet specific goals... Don't tell it what to do, give it success criteria and watch it go."
 
-The "Goal-Driven Execution" principle captures this: transform imperative instructions into declarative goals with verification loops.
+The "Goal-Driven Execution" principle captures this: transform imperative instructions into declarative goals with verification loops. The new "Evidence and Reasoning" principle extends this to the planning phase — don't jump to implementation without first grounding every decision in evidence.
 
 ## How to Know It's Working
 
 These guidelines are working if you see:
 
-- **Fewer unnecessary changes in diffs** — Only requested changes appear
+- **Fewer assumptions in diffs** — Only requested changes appear, no silent interpretations
+- **Evidence-backed decisions** — The LLM references docs, code, or prior research before acting
 - **Fewer rewrites due to overcomplication** — Code is simple the first time
 - **Clarifying questions come before implementation** — Not after mistakes
+- **Visible plans and progress** — You can always see what's being done and where things stand
 - **Clean, minimal PRs** — No drive-by refactoring or "improvements"
 
 ## Customization
